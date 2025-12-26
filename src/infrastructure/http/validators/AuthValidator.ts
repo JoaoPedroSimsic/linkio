@@ -25,7 +25,7 @@ export const authSchema = z.object({
 				}),
 			{
 				message:
-					"Password must contain at least one uppercase letter and one number",
+					"Password must contain at least one uppercase and lowercase letter and one number",
 			},
 		),
 });
