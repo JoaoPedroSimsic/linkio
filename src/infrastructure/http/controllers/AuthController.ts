@@ -5,7 +5,7 @@ import { LoginUserUseCase } from "@application/use-cases/user/LoginUserUseCase";
 import { handleHttpError } from "../utils/ErrorHandler";
 import { AppError } from "@shared/errors/AppError";
 import validator from "validator";
-import { z } from "zod";
+import { authSchema } from "../validators/AuthValidator";
 
 @injectable()
 export class AuthController {
@@ -14,17 +14,9 @@ export class AuthController {
 		private loginUserUseCase: LoginUserUseCase,
 	) { }
 
-	private authSchema = z.object({
-		email: z.string().min(1, "Email is required").trim().toLowerCase(),
-		password: z
-			.string()
-			.min(6, "Password must be at least 6 characters")
-			.max(72, "Password is too long"),
-	});
-
 	async create(req: Request, res: Response): Promise<Response> {
 		try {
-			const { email, password } = this.authSchema.parse(req.body);
+			const { email, password } = authSchema.parse(req.body);
 
 			if (!validator.isEmail(email)) {
 				throw new AppError("Invalid email format", 400);
@@ -43,7 +35,7 @@ export class AuthController {
 
 	async login(req: Request, res: Response): Promise<Response> {
 		try {
-			const validatedRequest = this.authSchema.parse(req.body);
+			const validatedRequest = authSchema.parse(req.body);
 
 			const result = await this.loginUserUseCase.execute(validatedRequest);
 
