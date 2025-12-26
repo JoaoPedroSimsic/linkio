@@ -38,6 +38,7 @@
     "mongoose": "^9.0.2",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0",
-    "validator": "^13.15.26"
+    "validator": "^13.15.26",
+    "zod": "^4.2.1"
   }
 }

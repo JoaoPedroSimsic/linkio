@@ -12,24 +12,7 @@ export class Order {
 		public status: OrderStatus,
 		public services: Service[],
 		public readonly id?: string,
-	) {
-		this.validateServices();
-	}
-
-	private validateServices(): void {
-		if (!this.services || this.services.length === 0) {
-			throw new AppError("Order must have at least one service");
-		}
-
-		const totalValue = this.services.reduce(
-			(acc, service) => acc + service.value,
-			0,
-		);
-
-		if (totalValue <= 0) {
-			throw new AppError("Order total value must be greater than zero");
-		}
-	}
+	) { }
 
 	public advanceState(): void {
 		const nextStateMap: Record<OrderState, OrderState | null> = {

@@ -5,6 +5,7 @@ import { LoginUserUseCase } from "../../../application/use-cases/user/LoginUserU
 import { handleHttpError } from "../utils/ErrorHandler";
 import { AppError } from "../../../shared/errors/AppError";
 import validator from "validator";
+import { z } from "zod";
 
 @injectable()
 export class AuthController {
@@ -13,26 +14,24 @@ export class AuthController {
 		private loginUserUseCase: LoginUserUseCase,
 	) { }
 
+	private authSchema = z.object({
+		email: z.string().min(1, "Email is required").trim().toLowerCase(),
+		password: z
+			.string()
+			.min(6, "Password must be at least 6 characters")
+			.max(72, "Password is too long"),
+	});
+
 	async create(req: Request, res: Response): Promise<Response> {
 		try {
-			const { email, password } = req.body;
-
-			if (!email || !password) {
-				throw new AppError("Missing email or password", 400);
-			}
+			const { email, password } = this.authSchema.parse(req.body);
 
 			if (!validator.isEmail(email)) {
 				throw new AppError("Invalid email format", 400);
 			}
 
-			if (!validator.isLength(password, { min: 6, max: 72 })) {
-				throw new AppError("Password must be between 6 and 72 characters", 400);
-			}
-
-			const sanitizedEmail = validator.normalizeEmail(email) || email;
-
 			await this.createUserUseCase.execute({
-				email: sanitizedEmail,
+				email,
 				password,
 			});
 
@@ -44,13 +43,9 @@ export class AuthController {
 
 	async login(req: Request, res: Response): Promise<Response> {
 		try {
-			const { email, password } = req.body;
+			const validatedRequest = this.authSchema.parse(req.body);
 
-			if (!email || !password) {
-				throw new AppError("Missing email or password", 400);
-			}
-
-			const result = await this.loginUserUseCase.execute(req.body);
+			const result = await this.loginUserUseCase.execute(validatedRequest);
 
 			return res.status(200).json(result);
 		} catch (err: unknown) {

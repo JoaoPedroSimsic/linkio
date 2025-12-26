@@ -6,6 +6,7 @@ import { handleHttpError } from "../utils/ErrorHandler";
 import { OrderState } from "../../../domain/value-objects/order/OrderState";
 import { AppError } from "../../../shared/errors/AppError";
 import { AdvanceOrderStateUseCase } from "../../../application/use-cases/order/AdvanceOrderStateUseCase";
+import { z } from "zod";
 
 @injectable()
 export class OrderController {
@@ -15,15 +16,25 @@ export class OrderController {
 		private advanceOrderStateUseCase: AdvanceOrderStateUseCase,
 	) { }
 
+	private createOrderSchema = z.object({
+		lab: z.string().min(1, "Lab name is required"),
+		patient: z.string().min(1, "Patient name is required"),
+		customer: z.string().min(1, "Customer name is required"),
+		services: z
+			.array(
+				z.object({
+					name: z.string().min(1, "Service name is required"),
+					value: z.number().positive("Service value must be greater than zero"),
+				}),
+			)
+			.min(1, "Order must have at least one service"),
+	});
+
 	async create(req: Request, res: Response): Promise<Response> {
 		try {
-			const { lab, patient, customer, services } = req.body;
+			const validatedRequest = this.createOrderSchema.parse(req.body);
 
-			if (!lab || !patient || !customer || !services) {
-				throw new AppError("Missing required fields", 400);
-			}
-
-			await this.createOrderUseCase.execute(req.body);
+			await this.createOrderUseCase.execute(validatedRequest);
 
 			return res.status(201).json({ message: "Order was created" });
 		} catch (err: unknown) {
