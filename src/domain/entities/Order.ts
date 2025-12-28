@@ -29,4 +29,8 @@ export class Order {
 
 		this.state = nextState;
 	}
+
+	public delete(): void {
+		this.status = "DELETED";
+	}
 }
