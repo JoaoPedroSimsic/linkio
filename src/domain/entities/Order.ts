@@ -15,7 +15,7 @@ export class Order {
 	) { }
 
 	private allServicesDone(): boolean {
-		return this.services.every((service) => service.status === "DONE");
+		return this.services.every((s) => s.status === "DONE");
 	}
 
 	public advanceState(): void {
