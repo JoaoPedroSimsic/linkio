@@ -18,7 +18,7 @@ export const createOrderSchema = z.object({
 	}),
 });
 
-export const getOrdersQuerySchema = z.object({
+export const getOrdersSchema = z.object({
 	body: z.object({
 		state: z.enum(ORDER_STATES).optional(),
 		page: z.coerce.number().min(1).default(1),

@@ -5,7 +5,7 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 import { validationMiddleware } from "../middlewares/validationMiddleware";
 import {
 	createOrderSchema,
-	getOrdersQuerySchema,
+	getOrdersSchema,
 	advanceOrderSchema,
 } from "../validators/OrderValidator";
 
@@ -17,7 +17,7 @@ orderRoutes.use(authMiddleware);
 orderRoutes.post("/", validationMiddleware(createOrderSchema), (req, res) =>
 	orderController.create(req, res),
 );
-orderRoutes.get("/", validationMiddleware(getOrdersQuerySchema), (req, res) =>
+orderRoutes.get("/", validationMiddleware(getOrdersSchema), (req, res) =>
 	orderController.get(req, res),
 );
 orderRoutes.patch(
