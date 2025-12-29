@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import "@/shared/container";
+import "@infrastructure/di";
 import express, { Application } from "express";
 import { initMongoConnection } from "@infrastructure/db/mongoConnection";
 import { orderRoutes } from "@infrastructure/http/routes/orderRoutes";

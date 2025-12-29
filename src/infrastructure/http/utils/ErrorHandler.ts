@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { AppError } from "@shared/errors/AppError";
+import { AppError } from "@application/exceptions/AppError";
 import { ZodError } from "zod"; 
 
 export const handleHttpError = (err: unknown, res: Response): Response => {

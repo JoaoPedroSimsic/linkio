@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { IUserRepository } from "@domain/repositories/IUserRepository";
-import { AppError } from "@shared/errors/AppError";
+import { AppError } from "@application/exceptions/AppError";
 
 interface DTO {
 	email: string;
